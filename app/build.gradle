@@ -1,0 +1,102 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'dagger.hilt.android.plugin'
+
+android {
+    compileSdkVersion AndroidConfig.COMPILE_AND_TARGET_SDK
+
+    defaultConfig {
+        applicationId AndroidConfig.APPLICATION_ID
+        minSdkVersion AndroidConfig.MIN_SDK
+        targetSdkVersion AndroidConfig.COMPILE_AND_TARGET_SDK
+        versionCode AndroidConfig.VERSION_CODE
+        versionName AndroidConfig.VERSION_NAME
+
+        testInstrumentationRunner AndroidConfig.TEST_INSTRUMENTATION_RUNNER
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+// To inline the bytecode built with JVM target 1.8 into
+// bytecode that is being built with JVM target 1.6. (e.g. navArgs)
+
+    buildFeatures {
+        dataBinding = true
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation JetBrain.JDK
+
+    implementation AndroidDxDependencies.APPCOMPAT
+
+    implementation AndroidDxDependencies.CORE_KTX
+    implementation AndroidDxDependencies.LIFECYCLE_VIEW_MODEL
+    implementation AndroidDxDependencies.LIFECYCLE_RUNTIME
+    implementation AndroidDxDependencies.LIFECYCLE_LIVEDATA
+    implementation AndroidDxDependencies.LIFECYCLE_EXT
+
+    implementation AndroidDxDependencies.CONSTRAINT_LAYOUT
+
+    implementation Google.MATERIAL
+
+    testImplementation TestDependencies.JUNIT
+    androidTestImplementation TestDependencies.EXT_JUNIT
+    androidTestImplementation TestDependencies.ESPRESSO
+
+    implementation AndroidDxDependencies.ACTIVITY_KTX
+    implementation AndroidDxDependencies.FRAGMENT_KTX
+
+    implementation AndroidDxDependencies.NAVIGATION_FRAGMENT
+    implementation AndroidDxDependencies.NAVIGATION_UI
+    implementation AndroidDxDependencies.NAVIGATION_FRAGMENT_KTX
+    implementation AndroidDxDependencies.NAVIGATION_UI_KTX
+
+    implementation AndroidDxDependencies.ROOM_RUNTIME
+    testImplementation AndroidDxDependencies.ROOM_TESTING
+    kapt AndroidDxDependencies.ROOM_COMPILER
+    annotationProcessor AndroidDxDependencies.ROOM_COMPILER
+    implementation AndroidDxDependencies.ROOM_KTX
+    implementation AndroidDxDependencies.ROOM_GUAVA
+
+    implementation AndroidDxDependencies.PAGING
+
+    implementation Dependencies.LOGGER
+
+    implementation Dependencies.GLIDE
+    kapt Dependencies.GLIDE_COMPILER
+
+    implementation Dependencies.COROUTINES_CORE
+
+    implementation Dependencies.HILT_ANDROID
+    implementation Dependencies.HILT_LIFECYCLE_VM
+    kapt Dependencies.HILT_ANDROID_COMPILER
+    kapt Dependencies.HILT_COMPILER
+
+    implementation NetworkDependencies.RETROFIT
+    implementation NetworkDependencies.MOSHI_KOTLIN
+    implementation NetworkDependencies.MOSHI
+    implementation NetworkDependencies.CONVERTER_MOSHI
+    kapt NetworkDependencies.MOSHI_KOTLIN_CODEGEN
+    implementation NetworkDependencies.LOGGING
+
+
+
+}

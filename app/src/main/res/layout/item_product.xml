@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="android.content.Context" />
+
+        <variable
+            name="itemPosition"
+            type="int" />
+
+        <variable
+            name="homeViewModel"
+            type="com.chan.ui.home.viewmodel.HomeViewModel" />
+
+        <variable
+            name="productModel"
+            type="com.chan.ui.home.model.ProductModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_thumbnail"
+            bindImage="@{productModel.thumbnail}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:minHeight="200dp"
+            android:onClick="@{() -> homeViewModel.startProductDetailActivity(itemPosition, productModel)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_height="200dp"
+            android:contentDescription="@string/item_product_iv_thumbnail_description" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#20000000"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_thumbnail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center|start"
+                android:singleLine="true"
+                android:text="@{productModel.name}"
+                android:textColor="@color/color_ffffff"
+                android:textSize="@dimen/common_text_size"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="제휴점이름입니다." />
+
+            <RatingBar
+                android:id="@+id/rating"
+                style="@style/CustomRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:max="5"
+                android:rating="@{productModel.rate}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_name"
+                tools:rating="3" />
+
+            <ToggleButton
+                android:id="@+id/tb_bookmark"
+                isBookmark="@{homeViewModel}"
+                productModel="@{productModel}"
+                android:layout_width="44dp"
+                android:layout_height="36dp"
+                android:background="@drawable/selector_check_bookmark_toggle"
+                android:onClick="@{() -> homeViewModel.onClickBookMark(context, productModel)}"
+                android:textOff="@null"
+                android:textOn="@null"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
