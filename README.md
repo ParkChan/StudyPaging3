@@ -11,6 +11,7 @@
 * ViewPager2
 * ActivityResultLauncher
 * Hilt
+* Paging 3.0
 
 ### Network
 
