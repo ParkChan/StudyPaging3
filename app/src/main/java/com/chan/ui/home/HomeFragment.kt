@@ -1,18 +1,22 @@
 package com.chan.ui.home
 
 import android.os.Bundle
+import android.util.ArrayMap
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.DiffUtil
+import com.chan.BR
 import com.chan.R
 import com.chan.common.base.BaseFragment
+import com.chan.common.base.BaseListAdapter
+import com.chan.common.base.BaseViewModel
 import com.chan.databinding.FragmentHomeBinding
 import com.chan.ui.detail.ProductDetailActivityContract
 import com.chan.ui.detail.ProductDetailContractData
-import com.chan.ui.home.adapter.ProductListAdapter
 import com.chan.ui.home.model.ProductModel
 import com.chan.ui.home.viewmodel.HomeViewModel
 import com.orhanobut.logger.Logger
@@ -26,19 +30,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
 ) {
 
     private val homeViewModel by viewModels<HomeViewModel>()
+    lateinit var adapter: BaseListAdapter<ProductModel>
 
     private val activityResultLauncher: ActivityResultLauncher<ProductDetailContractData> =
         registerForActivityResult(
             ProductDetailActivityContract()
         ) { result: ProductDetailContractData ->
-            (binding.rvProduct.adapter as ProductListAdapter).notifyItemChanged(result.position)
+            adapter.notifyItemChanged(result.position)
             Logger.d("registerForActivityResult >>> position is ${result.position} ")
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        Logger.d("onViewCreated() >>> ")
 
         initViewModel()
         iniViewModelObserve()
@@ -47,15 +50,30 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
 
     private fun initViewModel() {
         binding.homeViewModel = homeViewModel
-        binding.rvProduct.adapter = ProductListAdapter(binding.homeViewModel as HomeViewModel)
+
+        val viewModels = ArrayMap<Int, BaseViewModel>()
+        viewModels[BR.homeViewModel] = homeViewModel
+
+        adapter = BaseListAdapter(
+            layoutBindingId = Triple(R.layout.item_product, BR.productModel, BR.itemPosition),
+            viewModels = viewModels,
+            diffCallback = object : DiffUtil.ItemCallback<ProductModel>() {
+                override fun areItemsTheSame(
+                    oldItem: ProductModel,
+                    newItem: ProductModel
+                ): Boolean =
+                    oldItem.id == newItem.id
+
+                override fun areContentsTheSame(
+                    oldItem: ProductModel, newItem: ProductModel
+                ): Boolean = oldItem == newItem
+            })
+
+        binding.rvProduct.adapter = adapter
     }
 
     private fun iniViewModelObserve() {
-//        binding.homeViewModel?.productListModel?.observe(
-//            viewLifecycleOwner,
-//            Observer {
-//                Logger.d("homeViewModel observe listData $it")
-//            })
+
         homeViewModel.errorMessage.observe(
             viewLifecycleOwner,
             Observer {
@@ -82,14 +100,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
     private fun requestFistPage() {
         lifecycleScope.launch {
             homeViewModel.getProductListStream().collect {
-                (binding.rvProduct.adapter as ProductListAdapter).run {
+                adapter.run {
                     submitData(it)
                 }
             }
         }
     }
 
-    fun listUpdate(model: ProductModel) {
-        (binding.rvProduct.adapter as ProductListAdapter).notifyDataSetChanged()
+    fun listUpdate() {
+        adapter.notifyDataSetChanged()
     }
 }

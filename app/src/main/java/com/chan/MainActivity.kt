@@ -49,7 +49,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>(
 
         binding.bookmarkEventViewModel?.deleteProductModel?.observe(this, Observer {
             Logger.d("deleteProductModel observe >>> $it")
-            (pagerAdapter.list[0] as HomeFragment).listUpdate(it)
+            (pagerAdapter.list[0] as HomeFragment).listUpdate()
         })
     }
 }
