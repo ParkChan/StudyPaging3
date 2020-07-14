@@ -8,7 +8,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DiffUtil
+import androidx.paging.LoadState
 import com.chan.BR
 import com.chan.R
 import com.chan.common.base.BaseFragment
@@ -17,6 +17,7 @@ import com.chan.common.base.BaseViewModel
 import com.chan.databinding.FragmentHomeBinding
 import com.chan.ui.detail.ProductDetailActivityContract
 import com.chan.ui.detail.ProductDetailContractData
+import com.chan.ui.home.adapter.ProductDiffer
 import com.chan.ui.home.model.ProductModel
 import com.chan.ui.home.viewmodel.HomeViewModel
 import com.orhanobut.logger.Logger
@@ -44,32 +45,54 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
         super.onViewCreated(view, savedInstanceState)
 
         initViewModel()
+        initAdapter()
         iniViewModelObserve()
         requestFistPage()
     }
 
     private fun initViewModel() {
         binding.homeViewModel = homeViewModel
+    }
 
+    private fun initAdapter() {
         val viewModels = ArrayMap<Int, BaseViewModel>()
         viewModels[BR.homeViewModel] = homeViewModel
 
         adapter = BaseListAdapter(
             layoutBindingId = Triple(R.layout.item_product, BR.productModel, BR.itemPosition),
             viewModels = viewModels,
-            diffCallback = object : DiffUtil.ItemCallback<ProductModel>() {
-                override fun areItemsTheSame(
-                    oldItem: ProductModel,
-                    newItem: ProductModel
-                ): Boolean =
-                    oldItem.id == newItem.id
+            diffCallback = ProductDiffer()
+        )
 
-                override fun areContentsTheSame(
-                    oldItem: ProductModel, newItem: ProductModel
-                ): Boolean = oldItem == newItem
-            })
+        adapter.addLoadStateListener { loadState ->
+            /*
+             * loadState.refresh - represents the load state for loading the PagingData for the first time.
+             * loadState.prepend - represents the load state for loading data at the start of the list.
+             * loadState.append - represents the load state for loading data at the end of the list.
+             *
+             */
+            if (loadState.refresh is LoadState.Loading ||
+                loadState.append is LoadState.Loading
+            ) {
+                showProgressBar(true)
+            } else {
+                showProgressBar(false)
+
+                val errorState = when {
+                    loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+                    loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+                    loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+                    else -> null
+                }
+                errorState?.let {
+                    Toast.makeText(context, it.error.toString(), Toast.LENGTH_LONG).show()
+                }
+            }
+        }
 
         binding.rvProduct.adapter = adapter
+
+
     }
 
     private fun iniViewModelObserve() {
@@ -110,4 +133,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
     fun listUpdate() {
         adapter.notifyDataSetChanged()
     }
+
+    private fun showProgressBar(display: Boolean) {
+        binding.progressLoading.run {
+            if (!display)
+                this.visibility = View.GONE
+            else
+                this.visibility = View.VISIBLE
+        }
+    }
+
 }
