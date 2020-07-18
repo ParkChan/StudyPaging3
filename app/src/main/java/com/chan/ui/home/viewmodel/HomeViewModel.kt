@@ -2,7 +2,6 @@ package com.chan.ui.home.viewmodel
 
 import android.content.Context
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -23,9 +22,6 @@ class HomeViewModel @ViewModelInject constructor(
     private val searchProductRepository: SearchProductRepository,
     private val bookmarkRepository: BookmarkRepository
 ) : BaseViewModel() {
-
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> get() = _errorMessage
 
     private val _productItemSelected = MutableLiveData<ProductDetailContractData>()
     val productItemSelected get() = _productItemSelected

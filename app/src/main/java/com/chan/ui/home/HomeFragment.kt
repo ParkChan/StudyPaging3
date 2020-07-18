@@ -98,17 +98,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
 
     private fun iniViewModelObserve() {
 
-        homeViewModel.errorMessage.observe(
-            viewLifecycleOwner,
-            Observer {
-                context?.let {
-                    Toast.makeText(
-                        it,
-                        getString(R.string.common_toast_msg_network_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            })
         homeViewModel.productItemSelected.observe(
             viewLifecycleOwner,
             Observer {
