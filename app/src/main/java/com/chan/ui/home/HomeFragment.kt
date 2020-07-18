@@ -55,8 +55,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding>(
     }
 
     private fun initAdapter() {
-        val viewModels = ArrayMap<Int, BaseViewModel>()
-        viewModels[BR.homeViewModel] = homeViewModel
+        val viewModels = ArrayMap<Int, BaseViewModel>().apply {
+            this[BR.homeViewModel] = homeViewModel
+        }
 
         adapter = BaseListAdapter(
             layoutBindingId = Triple(R.layout.item_product, BR.productModel, BR.itemPosition),
