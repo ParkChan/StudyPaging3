@@ -22,13 +22,14 @@ abstract class BaseFragment<VDB : ViewDataBinding>(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(
+        binding = DataBindingUtil.inflate<VDB>(
             inflater,
             resource,
             container,
             false
-        )
-        binding.lifecycleOwner = viewLifecycleOwner
+        ).apply{
+            lifecycleOwner = this@BaseFragment
+        }
         return binding.root
     }
 }
