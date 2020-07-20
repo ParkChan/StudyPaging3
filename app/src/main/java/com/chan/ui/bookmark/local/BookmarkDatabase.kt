@@ -17,19 +17,17 @@ abstract class BookmarkDatabase : RoomDatabase() {
 
     companion object {
         @Volatile
-        private var instance: BookmarkDatabase? = null
+        private var INSTANCE: BookmarkDatabase? = null
 
         @JvmStatic
-        fun getInstance(context: Context): BookmarkDatabase {
-            if (instance == null) {
-                synchronized(this) {
-                    instance = Room.databaseBuilder(
-                        context,
-                        BookmarkDatabase::class.java, "BOOK_MARK_TABLE"
-                    ).build()
-                }
+        fun getInstance(context: Context): BookmarkDatabase  =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
             }
-            return instance!!
-        }
+
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(context.applicationContext,
+                BookmarkDatabase::class.java, "Bookmark.db")
+                .build()
     }
 }
