@@ -1,4 +1,4 @@
-package com.chan.ui.home.domain
+package com.chan.data
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig

@@ -1,8 +1,8 @@
-package com.chan.ui.home.domain
+package com.chan.data
 
 import androidx.paging.PagingSource
+import com.chan.data.response.mapToModel
 import com.chan.network.api.GoodChoiceApi
-import com.chan.ui.home.domain.entity.mapToModel
 import com.chan.ui.home.model.ProductModel
 import retrofit2.HttpException
 import java.io.IOException

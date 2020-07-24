@@ -7,11 +7,11 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.chan.common.base.BaseViewModel
-import com.chan.ui.bookmark.local.DataBaseResult
+import com.chan.data.SearchProductRepository
+import com.chan.db.BookmarkRepository
+import com.chan.db.DataBaseResult
 import com.chan.ui.bookmark.model.BookmarkModel
-import com.chan.ui.bookmark.repository.BookmarkRepository
 import com.chan.ui.detail.ProductDetailContractData
-import com.chan.ui.home.domain.SearchProductRepository
 import com.chan.ui.home.model.ProductModel
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.async
